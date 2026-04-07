@@ -1,11 +1,14 @@
 """Application module."""
 
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
 from admin import endpoints 
 
 from admin.machine_assets.machine_setup.defect_rate.endpoints import defect_rate_endpoint
 from admin.machine_assets.machine_setup.line_quality.endpoints import line_quality_endpoint
+from admin.machine_assets.machine_setup.availability.endpoints import availability_endpoint
+from admin.machine_assets.machine_setup.performance.endpoints import performance_endpoint
+from admin.machine_assets.machine_setup.quality.endpoints import quality_endpoint
+#from admin.machine_assets.machine_setup.oee.endpoints import oee_endpoint
 
 from containers import Container
 
@@ -19,19 +22,20 @@ def create_app() -> FastAPI:
     container.providers["kpi_defect_rate_service"] = container.kpi_defect_rate_service
     container.providers["KPILineProductionQualityService"] = container.KPILineProductionQualityService
     
+    
     # Wire container
-    container.wire(
-        modules=[
-            "admin.machine_assets.machine_setup.defect_rate.endpoints.defect_rate_endpoint",
-            "admin.machine_assets.machine_setup.line_quality.endpoints.line_quality_endpoint"
-        ]
-    )
+    container.wire(packages=["admin.machine_assets"])
 
     app = FastAPI()
 
     app.include_router(endpoints.router, prefix="/auth", tags=["auth"])
     app.include_router(defect_rate_endpoint.router)  
     app.include_router(line_quality_endpoint.router)  
+    app.include_router(availability_endpoint.router)
+    app.include_router(performance_endpoint.router)
+    app.include_router(quality_endpoint.router)
+#    app.include_router(oee_endpoint.router)
+
     return app
 
 
