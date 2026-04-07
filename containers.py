@@ -21,6 +21,8 @@ from admin.machine_assets.machine_setup.performance.services import performance_
 from admin.machine_assets.machine_setup.quality.services import quality_services
 
 from admin.machine_assets.machine_setup.pareto_losses.services import pareto_losses_services
+from admin.machine_assets.machine_setup.mtbf.services import mtbf_services
+from admin.machine_assets.machine_setup.mttr.services import mttr_services
 
 from database import Database
 from auth_client.auth_service import AuthService
@@ -119,7 +121,15 @@ class Container(containers.DeclarativeContainer):
     KPIParetoLossesService = providers.Factory(
     pareto_losses_services.KPIParetoLossesService,
     )
+    
+    KPIMTBFService = providers.Factory(
+        mtbf_services.KPIMTBFService,
+    )
 
+    KPIMTTRService = providers.Factory(
+        mttr_services.KPIMTTRService,
+    )
+    
     def init_resources(self):
         """Initialize resources like database tables."""
         db = self.db()
