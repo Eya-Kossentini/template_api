@@ -20,6 +20,8 @@ from admin.machine_assets.machine_setup.availability.services import availabilit
 from admin.machine_assets.machine_setup.performance.services import performance_services
 from admin.machine_assets.machine_setup.quality.services import quality_services
 
+from admin.machine_assets.machine_setup.pareto_losses.services import pareto_losses_services
+
 from database import Database
 from auth_client.auth_service import AuthService
 
@@ -113,6 +115,10 @@ class Container(containers.DeclarativeContainer):
         kpi_performance_service=KPIPerformanceService,
         kpi_quality_service=KPIQualityService,
     )  
+    
+    KPIParetoLossesService = providers.Factory(
+    pareto_losses_services.KPIParetoLossesService,
+    )
 
     def init_resources(self):
         """Initialize resources like database tables."""
