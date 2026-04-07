@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, Security, HTTPException
+from fastapi import APIRouter, Path, Query, Security, HTTPException
 
 from admin.dependencies import oauth2_scheme
 from admin.machine_assets.machine_setup.defect_rate.services.defect_rate_services import KPIDefectRateService
@@ -13,7 +13,7 @@ router = APIRouter(
 
 @router.get("/defect_rate", response_model=DefectRateResponse)
 def get_defect_rate_kpi(
-    station_id: int | None = Query(default=None),
+    station_id: int = Path(description= "Station ID"),
     token: str = Security(oauth2_scheme)
 ):
     try:
