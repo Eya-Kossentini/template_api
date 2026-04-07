@@ -15,6 +15,7 @@ from admin.machine_assets.machine_setup.mttr.endpoints import mttr_endpoint
 from admin.machine_assets.machine_setup.reliability_diagnostic.endpoints import reliability_diagnostic_endpoint
 from admin.machine_assets.machine_setup.downtime.endpoints import downtime_endpoint
 from admin.machine_assets.machine_setup.failure_loss_diagnostic.endpoints import failure_loss_diagnostic_endpoint
+from admin.machine_assets.machine_setup.scrap_by_day.endpoints import scrap_by_day_endpoint
 
 from containers import Container
 
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(reliability_diagnostic_endpoint.router)
     app.include_router(downtime_endpoint.router)
     app.include_router(failure_loss_diagnostic_endpoint.router)
+    app.include_router(scrap_by_day_endpoint.router)
     return app
 
 

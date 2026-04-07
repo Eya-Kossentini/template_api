@@ -25,6 +25,8 @@ from admin.machine_assets.machine_setup.mtbf.services import mtbf_services
 from admin.machine_assets.machine_setup.mttr.services import mttr_services
 from admin.machine_assets.machine_setup.downtime.services import downtime_services
 
+from admin.machine_assets.machine_setup.scrap_by_day.services import scrap_by_day_services
+
 from database import Database
 from auth_client.auth_service import AuthService
 
@@ -133,6 +135,10 @@ class Container(containers.DeclarativeContainer):
     
     KPIDowntimeService = providers.Factory(
         downtime_services.KPIDowntimeService,
+    )
+    
+    KPIScrapByDayService = providers.Factory(
+        scrap_by_day_services.KPIScrapByDayService,
     )
     
     
