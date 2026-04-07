@@ -8,7 +8,7 @@ from admin.machine_assets.machine_setup.line_quality.endpoints import line_quali
 from admin.machine_assets.machine_setup.availability.endpoints import availability_endpoint
 from admin.machine_assets.machine_setup.performance.endpoints import performance_endpoint
 from admin.machine_assets.machine_setup.quality.endpoints import quality_endpoint
-#from admin.machine_assets.machine_setup.oee.endpoints import oee_endpoint
+from admin.machine_assets.machine_setup.oee.endpoints import oee_endpoint
 
 from containers import Container
 
@@ -34,7 +34,7 @@ def create_app() -> FastAPI:
     app.include_router(availability_endpoint.router)
     app.include_router(performance_endpoint.router)
     app.include_router(quality_endpoint.router)
-#    app.include_router(oee_endpoint.router)
+    app.include_router(oee_endpoint.router)
 
     return app
 

@@ -39,7 +39,7 @@ class Container(containers.DeclarativeContainer):
 
     oauth2_scheme = providers.Object(OAuth2PasswordBearer(tokenUrl="auth/token"))
     config = providers.Configuration(yaml_files=["config.yml"])
-    # db = providers.Singleton(Database, db_url=config.db.url)
+    db = providers.Singleton(Database, db_url=config.db.url)
     db_url = os.environ.get("DATABASE_URL") or config.db.url
     db = providers.Singleton(Database, db_url)
     
@@ -107,12 +107,12 @@ class Container(containers.DeclarativeContainer):
         kpi_quality_repository=KPIQualityRepository,
     )
 
-#  KPIOeeService = providers.Factory(
- #       oee_services.KPIOeeService,
-  #      kpi_availability_service=KPIAvailabilityService,
-   #     kpi_performance_service=KPIPerformanceService,
-    #    kpi_quality_service=KPIQualityService,
-    #)  
+    KPIOeeService = providers.Factory(
+        oee_services.KPIOeeService,
+        kpi_availability_service=KPIAvailabilityService,
+        kpi_performance_service=KPIPerformanceService,
+        kpi_quality_service=KPIQualityService,
+    )  
 
     def init_resources(self):
         """Initialize resources like database tables."""
