@@ -11,6 +11,7 @@ class ParetoLossesResult(BaseModel):
     loss_pct: float
     cumulative_pct: float
     pareto_rank: int
+    is_critical:bool
 
 
 class ParetoLossesResponse(BaseModel):

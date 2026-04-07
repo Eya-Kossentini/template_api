@@ -19,6 +19,7 @@ class KPIParetoLossesService:
         date_from: Optional[str] = None,
         date_to: Optional[str] = None,
         token: Optional[str] = None,
+        only_critical: Optional[bool] = False,
     ):
         def normalize_day(value):
             return str(value)[:10] if value is not None else None
@@ -35,10 +36,8 @@ class KPIParetoLossesService:
         machine_data = self.pareto_losses_repository.get_machine_condition_data(token=token)
         bookings_data = self.pareto_losses_repository.get_bookings_data(token=token)
 
-        # clé = (station_id, production_day, loss_type)
         losses_agg = defaultdict(float)
 
-        # 1) BREAKDOWN + MICRO_STOP depuis machine_condition_data
         for item in machine_data:
             current_station_id = item.get("station_id")
             if current_station_id is None:
@@ -64,7 +63,6 @@ class KPIParetoLossesService:
             loss_hours = duration_seconds / 3600.0
             losses_agg[(current_station_id, production_day, loss_type)] += loss_hours
 
-        # 2) SCRAP + REWORK depuis bookings
         for item in bookings_data:
             current_station_id = item.get("station_id")
             if current_station_id is None:
@@ -86,10 +84,8 @@ class KPIParetoLossesService:
             else:
                 continue
 
-            # équivalent SQL: COUNT(*) * 1.0
             losses_agg[(current_station_id, production_day, loss_type)] += 1.0
 
-        # 3) regroupement par station + day
         grouped = defaultdict(list)
 
         for (st_id, prod_day, loss_type), loss_hours in losses_agg.items():
@@ -102,7 +98,6 @@ class KPIParetoLossesService:
 
         results = []
 
-        # 4) calcul loss_pct, cumulative_pct, pareto_rank
         for (st_id, prod_day), rows in grouped.items():
             rows_sorted = sorted(
                 rows,
@@ -114,10 +109,15 @@ class KPIParetoLossesService:
 
             for index, row in enumerate(rows_sorted, start=1):
                 loss_hours = row["loss_hours"]
-
                 loss_pct = round((100.0 * loss_hours / total_loss), 2) if total_loss > 0 else 0.0
+
                 cumulative += loss_hours
                 cumulative_pct = round((100.0 * cumulative / total_loss), 2) if total_loss > 0 else 0.0
+
+                is_critical = cumulative_pct <= 80
+
+                if only_critical and not is_critical:
+                    continue
 
                 results.append({
                     "station_id": row["station_id"],
@@ -127,6 +127,7 @@ class KPIParetoLossesService:
                     "loss_pct": loss_pct,
                     "cumulative_pct": cumulative_pct,
                     "pareto_rank": index,
+                    "is_critical": is_critical,
                 })
 
         results.sort(

@@ -37,6 +37,7 @@ def build_pareto_losses_service() -> KPIParetoLossesService:
 def get_pareto_losses(
     date_from: Optional[str] = Query(default=None, description="Start date in format YYYY-MM-DD"),
     date_to: Optional[str] = Query(default=None, description="End date in format YYYY-MM-DD"),
+    only_critical: Optional[bool] = Query(default=False, description="Show only Pareto critical losses (<=80%)"),
     token: str = Security(oauth2_scheme),
 ):
     try:
@@ -45,6 +46,7 @@ def get_pareto_losses(
             date_from=date_from,
             date_to=date_to,
             token=token,
+            only_critical=only_critical,
         )
     except HTTPException:
         raise
@@ -57,6 +59,7 @@ def get_pareto_losses_by_station(
     station_id: int = Path(description="Station ID"),
     date_from: Optional[str] = Query(default=None, description="Start date in format YYYY-MM-DD"),
     date_to: Optional[str] = Query(default=None, description="End date in format YYYY-MM-DD"),
+    only_critical: Optional[bool] = Query(default=False, description="Show only Pareto critical losses (<=80%)"),
     token: str = Security(oauth2_scheme),
 ):
     try:
@@ -66,6 +69,7 @@ def get_pareto_losses_by_station(
             date_from=date_from,
             date_to=date_to,
             token=token,
+            only_critical=only_critical,
         )
     except HTTPException:
         raise
