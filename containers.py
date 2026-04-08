@@ -26,6 +26,10 @@ from admin.machine_assets.machine_setup.mttr.services import mttr_services
 from admin.machine_assets.machine_setup.downtime.services import downtime_services
 
 from admin.machine_assets.machine_setup.scrap_by_day.services import scrap_by_day_services
+from admin.machine_assets.machine_setup.dashboard_overview.repositories import dashboard_overview_repository
+from admin.machine_assets.machine_setup.dashboard_overview.services import dashboard_overview_services
+
+from admin.machine_assets.machine_setup.oee.services.oee_services import KPIOeeService
 
 from database import Database
 from auth_client.auth_service import AuthService
@@ -142,6 +146,24 @@ class Container(containers.DeclarativeContainer):
     )
     
     
+    DashboardOverviewRepository = providers.Factory(
+        dashboard_overview_repository.DashboardOverviewRepository,
+        oee_service=KPIOeeService,
+        availability_service=KPIAvailabilityService,
+        performance_service=KPIPerformanceService,
+        quality_service=KPIQualityService,
+        mtbf_service=KPIMTBFService,
+        mttr_service=KPIMTTRService,
+    )
+
+    KPIDashboardOverviewService = providers.Factory(
+        dashboard_overview_services.KPIDashboardOverviewService,
+        repository=DashboardOverviewRepository,
+    )
+    
+      # Repository
+  
+   
     def init_resources(self):
         """Initialize resources like database tables."""
         db = self.db()
